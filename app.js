@@ -466,13 +466,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Share on LinkedIn button
     btnShareLinkedIn.addEventListener('click', () => {
+        const name = devData.name;
         const user = devData.username;
         const rank = devData.assessment.rank;
         const title = devData.assessment.title;
-        
-        const shareText = `Just scanned my GitHub profile with GitPulse! \n\n🌌 Profile: @${user}\n🛡️ Telemetry Rank: ${rank} (${title})\n💡 Scan your developer constellation here: https://rahulagarwal18.github.io/gitpulse \n\nBuilt by @Rahul Agarwal #GitPulse #GitHub #OpenSource #AI`;
-        
-        const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal18.github.io/gitpulse')}&summary=${encodeURIComponent(shareText)}`;
-        window.open(url, '_blank');
+        const repos = devData.reposCount;
+        const stars = devData.starsCount;
+        const primaryLang = devData.languages[0]?.name || 'Code';
+
+        // Pre-made custom message detailing the analysis metrics
+        const shareText = `🌌 Just scanned my GitHub profile on GitPulse!
+
+🛡️ Telemetry Rank: ${rank} (${title})
+💻 Developer: ${name} (@${user})
+📊 Stats Analyzed:
+  - Repositories: ${repos}
+  - Total Stargazers: ${stars}
+  - Core Language: ${primaryLang}
+
+🔗 Analyze your developer universe: https://rahulagarwal.tech/gitpulse
+
+Project developed by @Rahul Agarwal #GitPulse #GitHub #OpenSource #CreativeCoding`;
+
+        // Copy custom post text to clipboard
+        navigator.clipboard.writeText(shareText).then(() => {
+            const originalHTML = btnShareLinkedIn.innerHTML;
+            btnShareLinkedIn.innerHTML = '<i class="fas fa-check"></i> COPIED POST TEXT!';
+            btnShareLinkedIn.style.backgroundColor = '#10b981'; // Green feedback
+            btnShareLinkedIn.style.color = '#000';
+            
+            setTimeout(() => {
+                btnShareLinkedIn.innerHTML = originalHTML;
+                btnShareLinkedIn.style.backgroundColor = ''; // Reset
+                btnShareLinkedIn.style.color = '';
+                
+                // Open LinkedIn share dialog with our URL (which will load the OG banner/card preview)
+                const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
+                window.open(shareUrl, '_blank');
+            }, 1200);
+        }).catch(err => {
+            console.error('Clipboard copy failed:', err);
+            // Fallback: direct redirect
+            const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
+            window.open(shareUrl, '_blank');
+        });
     });
 });
