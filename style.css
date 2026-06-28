@@ -1189,8 +1189,32 @@ header {
     .repos-wrapper { grid-template-columns: 1fr; gap: 1rem; width: 100%; }
     .repo-card { height: 180px; }
     
-    .story-controls { gap: 1.2rem; bottom: 1.5rem; width: 100%; justify-content: center; }
-    .btn-control { width: 42px; height: 42px; }
+    .story-controls { 
+        gap: 0.8rem; 
+        bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); 
+        width: 100%; 
+        padding: 0 1rem;
+        justify-content: center; 
+        align-items: center;
+        z-index: 100;
+        left: 0;
+        transform: none;
+    }
+    .btn-control { 
+        width: 44px; 
+        height: 44px; 
+        font-size: 1rem;
+    }
+    .slide-indicators {
+        gap: 0.5rem;
+    }
+    .indicator-dot {
+        width: 6px;
+        height: 6px;
+    }
+    .indicator-dot.active {
+        width: 16px;
+    }
     
     .summary-grid { text-align: center; }
     .summary-details { align-items: center; }
