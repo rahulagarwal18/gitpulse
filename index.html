@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitPulse — Cinematic Developer Storyteller</title>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient Starfield Canvas -->
+    <canvas id="starfield"></canvas>
+    
+    <!-- Glassmorphic Noise Overlay -->
+    <div class="noise-overlay"></div>
+    <div class="cursor-glow" id="mouseGlow"></div>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">GIT<span>.</span>PULSE</div>
+            <div class="status-indicator">
+                <span class="pulse-dot"></span> SYSTEM ONLINE
+            </div>
+        </header>
+
+        <!-- MAIN LANDING VIEW -->
+        <main id="landingView" class="view-section active">
+            <div class="hero-content">
+                <div class="glitch-wrapper">
+                    <h1 class="hero-title" data-text="TRACE THE DEVELOPER UNIVERSE">TRACE THE DEVELOPER UNIVERSE</h1>
+                </div>
+                <p class="hero-subtitle">Transform GitHub profiles and repositories into cinematic, interactive contribution constellations.</p>
+
+                <div class="input-panel glass-card">
+                    <!-- GitHub API Mode Form -->
+                    <form id="pulseForm" class="input-group">
+                        <div class="input-wrapper">
+                            <i class="fab fa-github input-icon"></i>
+                            <input type="text" id="usernameInput" placeholder="Enter GitHub Username..." required autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn-glow-pulse">
+                            <span>TRACE PULSE</span>
+                        </button>
+                    </form>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <!-- Offline Mode / Local Parser Form -->
+                    <div class="offline-trigger">
+                        <button id="showOfflineBtn" class="btn-secondary">
+                            <i class="fas fa-terminal"></i> Parse Local Git Log
+                        </button>
+                    </div>
+                </div>
+
+                <div class="featured-banner">
+                    Created by <a href="https://github.com/rahulagarwal18" target="_blank" class="author-link">Rahul Agarwal</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- OFFLINE LOG PARSER VIEW -->
+        <section id="offlineView" class="view-section">
+            <div class="glass-card parse-card">
+                <button class="btn-close" id="closeOfflineBtn"><i class="fas fa-times"></i></button>
+                <h2><i class="fas fa-code-branch text-accent"></i> Local Git Log Telemetry</h2>
+                <p class="card-desc">Generate a story directly from your local terminal. Run this command in your local project folder, copy the output, and paste it below:</p>
+                
+                <div class="code-copy-box">
+                    <code id="powershellCommand">git log --pretty=format:'{^^n  \"commit\": \"%H\",^^n  \"author\": \"%an\",^^n  \"date\": \"%ad\",^^n  \"message\": \"%f\"^^n},' -n 100</code>
+                    <button class="btn-copy" id="copyCmdBtn" title="Copy Command"><i class="far fa-copy"></i></button>
+                </div>
+                
+                <textarea id="gitLogInput" placeholder="Paste the output here (e.g. wrap it in square brackets [ ] with a comma removed at the end to make it valid JSON, or just paste raw git log output and we will auto-format it!)..." spellcheck="false"></textarea>
+                
+                <button id="parseLogBtn" class="btn-glow-pulse w-full">
+                    <span>VISUALIZE LOCAL PULSE</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- LOADING SCREEN -->
+        <section id="loadingView" class="view-section">
+            <div class="loader-content">
+                <div class="cosmic-ring">
+                    <div class="ring-core"></div>
+                </div>
+                <div class="loader-stats">
+                    <div class="loader-number" id="loadPercent">0%</div>
+                    <div class="loader-status-text" id="loadStatus">Initializing Telemetry...</div>
+                </div>
+                <div class="loader-progress-bar">
+                    <div class="loader-progress-fill" id="loadProgress"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY PLAYER VIEW -->
+        <section id="storyView" class="view-section">
+            <!-- Navigation controls at bottom or sides -->
+            <div class="story-controls">
+                <button class="btn-control" id="prevSlide" disabled><i class="fas fa-chevron-left"></i></button>
+                <div class="slide-indicators" id="slideIndicators">
+                    <!-- Dynamic dots -->
+                </div>
+                <button class="btn-control" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+                <button class="btn-control btn-exit" id="exitStory" title="Exit Visualizer"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Slide progress line -->
+            <div class="story-progress-container">
+                <div class="story-progress-bar" id="storyProgressBar"></div>
+            </div>
+
+            <!-- Slide Container -->
+            <div class="slides-wrapper" id="slidesWrapper">
+
+                <!-- SLIDE 1: IDENTITY -->
+                <div class="slide-item active" data-slide="0">
+                    <div class="slide-grid">
+                        <div class="avatar-col">
+                            <div class="avatar-glow-ring">
+                                <img src="" alt="Developer Avatar" class="dev-avatar" id="slideAvatar">
+                            </div>
+                        </div>
+                        <div class="info-col">
+                            <span class="slide-badge">Stellar Object Detected</span>
+                            <h2 class="dev-name" id="slideName">Developer Name</h2>
+                            <p class="dev-username" id="slideUsername">@username</p>
+                            <p class="dev-bio" id="slideBio">Developer biography goes here. Building cool stuff in the digital vacuum.</p>
+                            <div class="meta-row">
+                                <div class="meta-item">
+                                    <span class="meta-label">ORBIT LAUNCHED</span>
+                                    <span class="meta-value" id="slideCreated">Joined 2021</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">PRIMARY REGION</span>
+                                    <span class="meta-value" id="slideLocation">Earth</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 2: CONSTELLATIONS (STATS) -->
+                <div class="slide-item" data-slide="1">
+                    <div class="slide-center">
+                        <span class="slide-badge">Contribution Constellation</span>
+                        <h2 class="slide-title">Telemetric Mass</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card glass-card">
+                                <div class="stat-icon"><i class="fas fa-cubes"></i></div>
+                                <div class="stat-value" id="statRepos">0</div>
+                                <div class="stat-label">REPOSITORIES</div>
+                            </div>
+                            <div class="stat-card glass-card">
+                                <div class="stat-icon"><i class="fas fa-star"></i></div>
+                                <div class="stat-value" id="statStars">0</div>
+                                <div class="stat-label">TOTAL STARS</div>
+                            </div>
+                            <div class="stat-card glass-card">
+                                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                                <div class="stat-value" id="statFollowers">0</div>
+                                <div class="stat-label">FOLLOWERS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: LANGUAGE NEBULA -->
+                <div class="slide-item" data-slide="2">
+                    <div class="slide-grid">
+                        <div class="chart-col">
+                            <div class="nebula-chart-container">
+                                <canvas id="nebulaChart" width="300" height="300"></canvas>
+                            </div>
+                        </div>
+                        <div class="info-col">
+                            <span class="slide-badge">Spectral Signature</span>
+                            <h2 class="slide-title">Language Nebula</h2>
+                            <p class="slide-desc">Stellar composition based on lines of code analyzed across repositories.</p>
+                            <div class="language-legend" id="langLegend">
+                                <!-- Dynamic languages list -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 4: STELLAR SYSTEMS (REPOSITORIES) -->
+                <div class="slide-item" data-slide="3">
+                    <div class="slide-center">
+                        <span class="slide-badge">Stellar Systems</span>
+                        <h2 class="slide-title">High-Gravity Repositories</h2>
+                        <div class="repos-wrapper" id="reposContainer">
+                            <!-- Dynamic Repo Cards -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 5: DASHBOARD SUMMARY -->
+                <div class="slide-item" data-slide="4">
+                    <div class="slide-grid summary-grid">
+                        <div class="summary-details">
+                            <span class="slide-badge">System Core</span>
+                            <h2 class="slide-title">Pulse Assessment</h2>
+                            <div class="summary-grade-box">
+                                <div class="grade-circle">
+                                    <span class="grade-val" id="summaryRank">A+</span>
+                                    <span class="grade-label">PULSE RANK</span>
+                                </div>
+                                <div class="grade-text">
+                                    <h4 id="summaryTitle">Stellar Architect</h4>
+                                    <p id="summaryDesc">Your contributions shape the galaxy. Highly active, robust, and multifaceted development profile.</p>
+                                </div>
+                            </div>
+                            <div class="export-actions">
+                                <button class="btn-glow-pulse" id="btnShareLinkedIn">
+                                    <i class="fab fa-linkedin"></i> SHARE ON LINKEDIN
+                                </button>
+                                <button class="btn-secondary" id="btnRestart">
+                                    <i class="fas fa-undo"></i> TEST ANOTHER
+                                </button>
+                            </div>
+                        </div>
+                        <div class="summary-stats-box glass-card">
+                            <h3>Telemetry Log</h3>
+                            <ul class="telemetry-list" id="telemetryList">
+                                <li><span class="time">[0.00s]</span> Authenticating connection...</li>
+                                <li><span class="time">[0.32s]</span> Resolving user credentials...</li>
+                                <li><span class="time">[0.85s]</span> Analysing commit gravity...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="canvas.js"></script>
+    <script src="story.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
