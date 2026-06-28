@@ -117,15 +117,18 @@ class StoryController {
                     { opacity: 1, y: 0, stagger: 0.05, duration: 0.6, ease: 'power3.out' }
                 );
 
-                // Specific Slide Triggers
-                if (index === 1) { // Stats counter
-                    this.animateCounters(nextSlide);
-                } else if (index === 2) { // Languages
-                    if (window.renderLanguagesChart) {
-                        window.renderLanguagesChart();
+                // Specific Slide Triggers (Only for Single Explorer mode)
+                const isDuel = document.getElementById('duelSlidesDeck')?.style.display === 'block';
+                if (!isDuel) {
+                    if (index === 1) { // Stats counter
+                        this.animateCounters(nextSlide);
+                    } else if (index === 2) { // Languages
+                        if (window.renderLanguagesChart) {
+                            window.renderLanguagesChart();
+                        }
+                    } else if (index === 4) { // Summary Assessment
+                        this.animateGradeProgress(nextSlide);
                     }
-                } else if (index === 4) { // Summary Assessment
-                    this.animateGradeProgress(nextSlide);
                 }
             }
         });
@@ -195,6 +198,15 @@ class StoryController {
     }
 
     reset() {
+        // Dynamically bind to the active slide deck
+        const duelDeck = document.getElementById('duelSlidesDeck');
+        if (duelDeck && duelDeck.style.display === 'block') {
+            this.slides = document.querySelectorAll('#duelSlidesDeck .slide-item');
+        } else {
+            this.slides = document.querySelectorAll('#singleSlidesDeck .slide-item');
+        }
+        this.totalSlides = this.slides.length;
+
         this.currentIndex = 0;
         this.isTransitioning = false;
         this.slides.forEach((slide, i) => {

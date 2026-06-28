@@ -717,4 +717,301 @@ Project developed by @Rahul Agarwal #GitPulse #GitHub #OpenSource #CreativeCodin
             });
         });
     });
+
+    // === TAB SWITCHER FOR DUEL / SINGLE SCAN ===
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const panelDivider = document.getElementById('panelDivider');
+    const panelOfflineTrigger = document.getElementById('panelOfflineTrigger');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => {
+                c.classList.remove('active');
+                c.style.display = 'none';
+            });
+
+            btn.classList.add('active');
+            const activeContent = document.querySelector(`.tab-content[data-tab="${tab}"]`);
+            if (activeContent) {
+                activeContent.classList.add('active');
+                activeContent.style.display = 'flex';
+            }
+
+            if (tab === 'duel') {
+                if (panelDivider) panelDivider.style.display = 'none';
+                if (panelOfflineTrigger) panelOfflineTrigger.style.display = 'none';
+            } else {
+                if (panelDivider) panelDivider.style.display = 'flex';
+                if (panelOfflineTrigger) panelOfflineTrigger.style.display = 'block';
+            }
+        });
+    });
+
+    // === DUEL SUBMISSION & FETCHING ===
+    const duelForm = document.getElementById('duelForm');
+    const usernameInputA = document.getElementById('usernameInputA');
+    const usernameInputB = document.getElementById('usernameInputB');
+
+    duelForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userA = usernameInputA.value.trim();
+        const userB = usernameInputB.value.trim();
+        if (!userA || !userB) return;
+
+        showView(loadingView);
+        
+        await runLoaderSequence(async (onProgress) => {
+            try {
+                onProgress(10, 'Connecting to quantum satellite...');
+                
+                // Fetch profiles concurrently
+                const [resA, resB] = await Promise.all([
+                    fetch(`https://api.github.com/users/${userA}`),
+                    fetch(`https://api.github.com/users/${userB}`)
+                ]);
+
+                if (!resA.ok) throw new Error(`User ${userA} not found`);
+                if (!resB.ok) throw new Error(`User ${userB} not found`);
+
+                const [profileA, profileB] = await Promise.all([resA.json(), resB.json()]);
+
+                onProgress(45, 'Scanning gravitational fields...');
+
+                // Fetch repositories concurrently
+                const [reposResA, reposResB] = await Promise.all([
+                    fetch(`https://api.github.com/users/${userA}/repos?per_page=100&sort=updated`),
+                    fetch(`https://api.github.com/users/${userB}/repos?per_page=100&sort=updated`)
+                ]);
+
+                if (!reposResA.ok) throw new Error(`Failed to fetch repositories for ${userA}`);
+                if (!reposResB.ok) throw new Error(`Failed to fetch repositories for ${userB}`);
+
+                const [reposA, reposB] = await Promise.all([reposResA.json(), reposResB.json()]);
+
+                onProgress(75, 'Running collision matrix...');
+
+                // Process details A
+                let starsA = reposA.reduce((sum, r) => sum + r.stargazers_count, 0);
+                let langsA = {};
+                reposA.forEach(r => { if (r.language) langsA[r.language] = (langsA[r.language] || 0) + 1; });
+                
+                // Process details B
+                let starsB = reposB.reduce((sum, r) => sum + r.stargazers_count, 0);
+                let langsB = {};
+                reposB.forEach(r => { if (r.language) langsB[r.language] = (langsB[r.language] || 0) + 1; });
+
+                // Format data for both competitors
+                devData = {
+                    type: 'duel',
+                    contenderA: {
+                        name: profileA.name || profileA.login,
+                        username: profileA.login,
+                        avatar: profileA.avatar_url,
+                        repos: profileA.public_repos,
+                        stars: starsA,
+                        followers: profileA.followers,
+                        languages: Object.entries(langsA).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 3)
+                    },
+                    contenderB: {
+                        name: profileB.name || profileB.login,
+                        username: profileB.login,
+                        avatar: profileB.avatar_url,
+                        repos: profileB.public_repos,
+                        stars: starsB,
+                        followers: profileB.followers,
+                        languages: Object.entries(langsB).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 3)
+                    }
+                };
+
+                // Calculate Duel Scores & Outcome
+                const scoreA = (devData.contenderA.repos * 2) + (devData.contenderA.stars * 10) + (devData.contenderA.followers * 5);
+                const scoreB = (devData.contenderB.repos * 2) + (devData.contenderB.stars * 10) + (devData.contenderB.followers * 5);
+                devData.scoreA = scoreA;
+                devData.scoreB = scoreB;
+
+                if (scoreA > scoreB) {
+                    devData.winner = 'A';
+                } else if (scoreB > scoreA) {
+                    devData.winner = 'B';
+                } else {
+                    devData.winner = 'TIE';
+                }
+
+                onProgress(90, 'Resolving cosmic battle...');
+                fillDuelSlides(devData);
+
+                onProgress(100, 'Battle resolution ready!');
+            } catch (err) {
+                console.error(err);
+                alert(`Duel compilation failed: ${err.message}`);
+                showView(landingView);
+                throw err;
+            }
+        });
+    });
+
+    // === FILL DUEL SLIDES DATA ===
+    function fillDuelSlides(data) {
+        // Slide 1: Contenders
+        document.getElementById('duelAvatarA').src = data.contenderA.avatar;
+        document.getElementById('duelNameA').innerText = data.contenderA.name;
+        document.getElementById('duelUserA').innerText = `@${data.contenderA.username}`;
+
+        document.getElementById('duelAvatarB').src = data.contenderB.avatar;
+        document.getElementById('duelNameB').innerText = data.contenderB.name;
+        document.getElementById('duelUserB').innerText = `@${data.contenderB.username}`;
+
+        // Slide 2: Comparison Board
+        const rA = data.contenderA.repos;
+        const rB = data.contenderB.repos;
+        document.getElementById('duelReposA').innerText = rA;
+        document.getElementById('duelReposB').innerText = rB;
+        const maxRepos = Math.max(rA + rB, 1);
+        document.getElementById('duelReposBarA').style.width = `${(rA / maxRepos) * 100}%`;
+        document.getElementById('duelReposBarB').style.width = `${(rB / maxRepos) * 100}%`;
+
+        const sA = data.contenderA.stars;
+        const sB = data.contenderB.stars;
+        document.getElementById('duelStarsA').innerText = sA;
+        document.getElementById('duelStarsB').innerText = sB;
+        const maxStars = Math.max(sA + sB, 1);
+        document.getElementById('duelStarsBarA').style.width = `${(sA / maxStars) * 100}%`;
+        document.getElementById('duelStarsBarB').style.width = `${(sB / maxStars) * 100}%`;
+
+        const fA = data.contenderA.followers;
+        const fB = data.contenderB.followers;
+        document.getElementById('duelFollowersA').innerText = fA;
+        document.getElementById('duelFollowersB').innerText = fB;
+        const maxFollowers = Math.max(fA + fB, 1);
+        document.getElementById('duelFollowersBarA').style.width = `${(fA / maxFollowers) * 100}%`;
+        document.getElementById('duelFollowersBarB').style.width = `${(fB / maxFollowers) * 100}%`;
+
+        // Slide 3: Language Match
+        const listA = document.getElementById('duelLangListA');
+        const listB = document.getElementById('duelLangListB');
+        listA.innerHTML = '';
+        listB.innerHTML = '';
+
+        if (data.contenderA.languages.length === 0) {
+            listA.innerHTML = '<div class="lang-battle-item">No core language detected</div>';
+        } else {
+            const totalA = data.contenderA.languages.reduce((sum, l) => sum + l.count, 0) || 1;
+            data.contenderA.languages.forEach(l => {
+                const pct = Math.round((l.count / totalA) * 100);
+                listA.innerHTML += `
+                    <div class="lang-battle-item">
+                        <span class="lang-battle-name">${l.name}</span>
+                        <span class="lang-battle-pct">${pct}%</span>
+                    </div>
+                `;
+            });
+        }
+
+        if (data.contenderB.languages.length === 0) {
+            listB.innerHTML = '<div class="lang-battle-item">No core language detected</div>';
+        } else {
+            const totalB = data.contenderB.languages.reduce((sum, l) => sum + l.count, 0) || 1;
+            data.contenderB.languages.forEach(l => {
+                const pct = Math.round((l.count / totalB) * 100);
+                listB.innerHTML += `
+                    <div class="lang-battle-item">
+                        <span class="lang-battle-name">${l.name}</span>
+                        <span class="lang-battle-pct">${pct}%</span>
+                    </div>
+                `;
+            });
+        }
+
+        // Slide 4: Verdict
+        const winnerTitle = document.getElementById('duelWinnerTitle');
+        const winnerDesc = document.getElementById('duelWinnerDesc');
+        
+        if (data.winner === 'A') {
+            winnerTitle.innerText = `${data.contenderA.name} wins!`;
+            winnerTitle.style.color = '#00ffff';
+            winnerDesc.innerText = `Declaring orbital dominance over the local developer universe with a total battle score of ${data.scoreA} gravity points.`;
+        } else if (data.winner === 'B') {
+            winnerTitle.innerText = `${data.contenderB.name} wins!`;
+            winnerTitle.style.color = '#8b5cf6';
+            winnerDesc.innerText = `Declaring orbital dominance over the local developer universe with a total battle score of ${data.scoreB} gravity points.`;
+        } else {
+            winnerTitle.innerText = `It's a Cosmic Tie!`;
+            winnerTitle.style.color = '#fff';
+            winnerDesc.innerText = `Both developers have identical gravitational pull in the local code dimension (${data.scoreA} score).`;
+        }
+
+        // Setup Slide Player for Duel Slide Deck
+        document.getElementById('singleSlidesDeck').style.display = 'none';
+        document.getElementById('duelSlidesDeck').style.display = 'block';
+
+        showView(storyView);
+        window.StoryPlayer.reset();
+    }
+
+    // === DUEL ACTION LISTENERS ===
+    const btnShareDuel = document.getElementById('btnShareDuel');
+    const btnRestartDuel = document.getElementById('btnRestartDuel');
+
+    btnRestartDuel.addEventListener('click', () => {
+        devData = null;
+        showView(landingView);
+        usernameInputA.value = '';
+        usernameInputB.value = '';
+    });
+
+    btnShareDuel.addEventListener('click', () => {
+        const userA = devData.contenderA.username;
+        const userB = devData.contenderB.username;
+        
+        let verdictText = '';
+        if (devData.winner === 'A') {
+            verdictText = `@${userA} defeated @${userB}! 🏆`;
+        } else if (devData.winner === 'B') {
+            verdictText = `@${userB} defeated @${userA}! 🏆`;
+        } else {
+            verdictText = `It was a tie between @${userA} and @${userB}! 🤝`;
+        }
+
+        const shareText = `🌌 Just battled on GitPulse (GitHub Profile Duel)!
+
+⚔️ Matchup: @${userA} vs @${userB}
+📊 Verdict: ${verdictText}
+🔥 Scores:
+  - @${userA}: ${devData.scoreA}
+  - @${userB}: ${devData.scoreB}
+
+🔗 Challenge your coding rivals: https://rahulagarwal.tech/gitpulse
+
+Project developed by @Rahul Agarwal #GitPulse #GitHub #CodeBattle #TechCommunity`;
+
+        copyTextToClipboard(shareText).then(() => {
+            const originalHTML = btnShareDuel.innerHTML;
+            btnShareDuel.innerHTML = '<i class="fas fa-check"></i> BATTLE COPIED!';
+            btnShareDuel.style.backgroundColor = '#10b981';
+            btnShareDuel.style.color = '#000';
+            
+            // Show toast
+            showToast(
+                'Battle Copied!',
+                '✓ Duel report text copied to clipboard.<br>Opening LinkedIn... Paste (Cmd/Ctrl+V) to share the showdown!',
+                'fa-bolt'
+            );
+
+            setTimeout(() => {
+                btnShareDuel.innerHTML = originalHTML;
+                btnShareDuel.style.backgroundColor = '';
+                btnShareDuel.style.color = '';
+                
+                const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
+                window.open(shareUrl, '_blank');
+            }, 2000);
+        }).catch(err => {
+            console.error(err);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`, '_blank');
+        });
+    });
 });
