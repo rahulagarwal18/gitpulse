@@ -1,5 +1,17 @@
 # 🌌 GitPulse — Cinematic Developer Storyteller
 
+<p align="left">
+  <a href="https://rahulagarwal.tech/gitpulse" target="_blank">
+    <img src="https://img.shields.io/badge/Live-Application-00ffff?style=for-the-badge&logo=google-chrome&logoColor=black" alt="Live App" />
+  </a>
+  &nbsp;&nbsp;
+  <img src="https://img.shields.io/github/license/rahulagarwal18/gitpulse?style=for-the-badge&color=8b5cf6" alt="License" />
+  &nbsp;&nbsp;
+  <img src="https://img.shields.io/github/stars/rahulagarwal18/gitpulse?style=for-the-badge&color=00ffff" alt="GitHub Stars" />
+  &nbsp;&nbsp;
+  <img src="https://img.shields.io/github/forks/rahulagarwal18/gitpulse?style=for-the-badge&color=8b5cf6" alt="GitHub Forks" />
+</p>
+
 GitPulse is a premium, client-side web application that transforms standard GitHub profiles and repositories into interactive, animated "Developer Universe" constellations. 
 
 Instead of flat badges or standard tables, GitPulse leverages custom HTML5 Canvas particle systems and GSAP cinematic transitions to present developer contributions, stargazers, and language telemetry as stellar orbits.
