@@ -14,6 +14,7 @@ class StoryController {
         
         this.currentIndex = 0;
         this.totalSlides = this.slides.length;
+        this.isTransitioning = false;
         
         this.initEventListeners();
     }
@@ -68,6 +69,8 @@ class StoryController {
 
     goToSlide(index) {
         if (index < 0 || index >= this.totalSlides || index === this.currentIndex) return;
+        if (this.isTransitioning) return;
+        this.isTransitioning = true;
         
         const currentSlide = this.slides[this.currentIndex];
         const nextSlide = this.slides[index];
@@ -96,7 +99,11 @@ class StoryController {
                 nextSlide.classList.add('active');
                 
                 // Animate In Next
-                const tlIn = gsap.timeline();
+                const tlIn = gsap.timeline({
+                    onComplete: () => {
+                        this.isTransitioning = false;
+                    }
+                });
                 tlIn.fromTo(nextSlide, 
                     { opacity: 0, scale: 0.98, y: 10 },
                     { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'power2.out' }
@@ -189,6 +196,7 @@ class StoryController {
 
     reset() {
         this.currentIndex = 0;
+        this.isTransitioning = false;
         this.slides.forEach((slide, i) => {
             if (i === 0) {
                 slide.classList.add('active');

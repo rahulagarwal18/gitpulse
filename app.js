@@ -464,6 +464,35 @@ document.addEventListener('DOMContentLoaded', () => {
         gitLogInput.value = '';
     });
 
+    // Copy Text Fallback helper
+    function copyTextToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve, reject) => {
+            try {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                if (successful) {
+                    resolve();
+                } else {
+                    reject(new Error('Copy command failed'));
+                }
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
     // Share on LinkedIn button
     btnShareLinkedIn.addEventListener('click', () => {
         const name = devData.name;
@@ -488,8 +517,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Project developed by @Rahul Agarwal #GitPulse #GitHub #OpenSource #CreativeCoding`;
 
-        // Copy custom post text to clipboard
-        navigator.clipboard.writeText(shareText).then(() => {
+        // Copy custom post text to clipboard with fallback
+        copyTextToClipboard(shareText).then(() => {
             const originalHTML = btnShareLinkedIn.innerHTML;
             btnShareLinkedIn.innerHTML = '<i class="fas fa-check"></i> COPIED POST TEXT!';
             btnShareLinkedIn.style.backgroundColor = '#10b981'; // Green feedback
