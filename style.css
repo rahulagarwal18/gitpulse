@@ -262,7 +262,7 @@ header {
     transition: var(--transition-smooth);
 }
 
-#usernameInput {
+.input-wrapper input {
     width: 100%;
     padding: 1.2rem 1.2rem 1.2rem 3.5rem;
     background: rgba(0, 0, 0, 0.4);
@@ -275,13 +275,13 @@ header {
     transition: var(--transition-smooth);
 }
 
-#usernameInput:focus {
+.input-wrapper input:focus {
     border-color: var(--accent);
     box-shadow: 0 0 20px var(--accent-glow);
     background: rgba(0, 0, 0, 0.6);
 }
 
-#usernameInput:focus + .input-icon {
+.input-wrapper input:focus + .input-icon {
     color: var(--accent-cyan);
 }
 
@@ -1385,12 +1385,19 @@ header {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
 }
 
+#duelForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 1.5rem;
+}
+
 .duel-inputs-wrapper {
     display: flex;
     align-items: center;
     gap: 1.2rem;
     width: 100%;
-    margin-bottom: 1.5rem;
 }
 
 .duel-inputs-wrapper .input-wrapper {
