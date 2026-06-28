@@ -30,6 +30,7 @@ body {
     font-family: var(--font-main);
     overflow: hidden;
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
     position: relative;
 }
@@ -79,6 +80,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
 }
 
@@ -604,6 +606,7 @@ header {
     flex-direction: column;
     justify-content: flex-end;
     position: relative;
+    overflow: hidden;
 }
 
 #storyView.active {
@@ -1166,10 +1169,12 @@ header {
     
     .slides-wrapper { overflow: visible; }
     .slide-item { 
-        padding: 4vh 1.5rem 20vh; 
+        padding: 2rem 1.5rem 140px; 
         overflow-y: auto; 
-        display: block; 
-        height: calc(100vh - 120px); 
+        -webkit-overflow-scrolling: touch;
+        display: flex; 
+        flex-direction: column;
+        height: 100%; 
     }
     
     .slide-grid { 
