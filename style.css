@@ -1428,19 +1428,47 @@ header {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 220px;
+    width: 200px;
     animation: contender-entrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.contender-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 1rem;
+    color: #fff;
 }
 
 .contender-card.card-a { animation-delay: 0.2s; }
 .contender-card.card-b { animation-delay: 0.4s; }
 
+.contender-card.card-a .avatar-glow-ring {
+    background: linear-gradient(135deg, #00d2ff, #00ffff);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.35);
+    width: clamp(130px, 16vw, 180px);
+    height: clamp(130px, 16vw, 180px);
+    padding: 6px;
+}
+
+.contender-card.card-b .avatar-glow-ring {
+    background: linear-gradient(135deg, #8b5cf6, #d946ef);
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.35);
+    width: clamp(130px, 16vw, 180px);
+    height: clamp(130px, 16vw, 180px);
+    padding: 6px;
+}
+
 .contender-username {
     font-family: var(--font-mono);
     color: var(--accent-cyan);
-    font-size: 0.9rem;
-    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
     opacity: 0.8;
+}
+
+.contender-card.card-b .contender-username {
+    color: #d946ef;
 }
 
 .vs-divider {

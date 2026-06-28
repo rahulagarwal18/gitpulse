@@ -291,106 +291,114 @@
 
                 <!-- DUEL SLIDE 1: CONTENDERS -->
                 <div class="slide-item" data-slide="0">
-                    <span class="slide-badge">Contenders</span>
-                    <h2 class="slide-title">System Collision</h2>
-                    <div class="duel-contenders-row">
-                        <div class="contender-card card-a">
-                            <div class="avatar-glow-ring">
-                                <img id="duelAvatarA" src="" alt="Contender A">
+                    <div class="slide-center">
+                        <span class="slide-badge">Contenders</span>
+                        <h2 class="slide-title">System Collision</h2>
+                        <div class="duel-contenders-row">
+                            <div class="contender-card card-a">
+                                <div class="avatar-glow-ring">
+                                    <img id="duelAvatarA" src="" alt="Contender A" class="dev-avatar">
+                                </div>
+                                <h3 id="duelNameA">Contender A</h3>
+                                <span id="duelUserA" class="contender-username">@usernameA</span>
                             </div>
-                            <h3 id="duelNameA">Contender A</h3>
-                            <span id="duelUserA" class="contender-username">@usernameA</span>
-                        </div>
-                        
-                        <div class="vs-divider">
-                            <div class="vs-glow-text">VS</div>
-                            <div class="vs-energy-line"></div>
-                        </div>
+                            
+                            <div class="vs-divider">
+                                <div class="vs-glow-text">VS</div>
+                                <div class="vs-energy-line"></div>
+                            </div>
 
-                        <div class="contender-card card-b">
-                            <div class="avatar-glow-ring">
-                                <img id="duelAvatarB" src="" alt="Contender B">
+                            <div class="contender-card card-b">
+                                <div class="avatar-glow-ring">
+                                    <img id="duelAvatarB" src="" alt="Contender B" class="dev-avatar">
+                                </div>
+                                <h3 id="duelNameB">Contender B</h3>
+                                <span id="duelUserB" class="contender-username">@usernameB</span>
                             </div>
-                            <h3 id="duelNameB">Contender B</h3>
-                            <span id="duelUserB" class="contender-username">@usernameB</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- DUEL SLIDE 2: TELEMETRY COMPARISON -->
                 <div class="slide-item" data-slide="1">
-                    <span class="slide-badge">Comparison matrix</span>
-                    <h2 class="slide-title">Telemetry Comparison</h2>
-                    <div class="comparison-board glass-card">
-                        <div class="comparison-row">
-                            <div class="comp-val val-a" id="duelReposA">0</div>
-                            <div class="comp-metric-name">REPOSITORIES</div>
-                            <div class="comp-val val-b" id="duelReposB">0</div>
-                        </div>
-                        <div class="comp-bar-wrapper">
-                            <div class="comp-bar-fill fill-a" id="duelReposBarA" style="width: 50%;"></div>
-                            <div class="comp-bar-fill fill-b" id="duelReposBarB" style="width: 50%;"></div>
-                        </div>
+                    <div class="slide-center">
+                        <span class="slide-badge">Comparison matrix</span>
+                        <h2 class="slide-title">Telemetry Comparison</h2>
+                        <div class="comparison-board glass-card">
+                            <div class="comparison-row">
+                                <div class="comp-val val-a" id="duelReposA">0</div>
+                                <div class="comp-metric-name">REPOSITORIES</div>
+                                <div class="comp-val val-b" id="duelReposB">0</div>
+                            </div>
+                            <div class="comp-bar-wrapper">
+                                <div class="comp-bar-fill fill-a" id="duelReposBarA" style="width: 50%;"></div>
+                                <div class="comp-bar-fill fill-b" id="duelReposBarB" style="width: 50%;"></div>
+                            </div>
 
-                        <div class="comparison-row">
-                            <div class="comp-val val-a" id="duelStarsA">0</div>
-                            <div class="comp-metric-name">STAR GRAVITY</div>
-                            <div class="comp-val val-b" id="duelStarsB">0</div>
-                        </div>
-                        <div class="comp-bar-wrapper">
-                            <div class="comp-bar-fill fill-a" id="duelStarsBarA" style="width: 50%;"></div>
-                            <div class="comp-bar-fill fill-b" id="duelStarsBarB" style="width: 50%;"></div>
-                        </div>
+                            <div class="comparison-row">
+                                <div class="comp-val val-a" id="duelStarsA">0</div>
+                                <div class="comp-metric-name">STAR GRAVITY</div>
+                                <div class="comp-val val-b" id="duelStarsB">0</div>
+                            </div>
+                            <div class="comp-bar-wrapper">
+                                <div class="comp-bar-fill fill-a" id="duelStarsBarA" style="width: 50%;"></div>
+                                <div class="comp-bar-fill fill-b" id="duelStarsBarB" style="width: 50%;"></div>
+                            </div>
 
-                        <div class="comparison-row">
-                            <div class="comp-val val-a" id="duelFollowersA">0</div>
-                            <div class="comp-metric-name">INFLUENCE RATING</div>
-                            <div class="comp-val val-b" id="duelFollowersB">0</div>
-                        </div>
-                        <div class="comp-bar-wrapper">
-                            <div class="comp-bar-fill fill-a" id="duelFollowersBarA" style="width: 50%;"></div>
-                            <div class="comp-bar-fill fill-b" id="duelFollowersBarB" style="width: 50%;"></div>
+                            <div class="comparison-row">
+                                <div class="comp-val val-a" id="duelFollowersA">0</div>
+                                <div class="comp-metric-name">INFLUENCE RATING</div>
+                                <div class="comp-val val-b" id="duelFollowersB">0</div>
+                            </div>
+                            <div class="comp-bar-wrapper">
+                                <div class="comp-bar-fill fill-a" id="duelFollowersBarA" style="width: 50%;"></div>
+                                <div class="comp-bar-fill fill-b" id="duelFollowersBarB" style="width: 50%;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- DUEL SLIDE 3: LANGUAGE MATCH -->
                 <div class="slide-item" data-slide="2">
-                    <span class="slide-badge">Spectral Signature</span>
-                    <h2 class="slide-title">Language Dominance</h2>
-                    <div class="languages-battle-grid">
-                        <div class="lang-pillar pillar-a glass-card">
-                            <h3>Contender A Core</h3>
-                            <div id="duelLangListA" class="lang-battle-list"></div>
-                        </div>
-                        <div class="vs-sphere">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <div class="lang-pillar pillar-b glass-card">
-                            <h3>Contender B Core</h3>
-                            <div id="duelLangListB" class="lang-battle-list"></div>
+                    <div class="slide-center">
+                        <span class="slide-badge">Spectral Signature</span>
+                        <h2 class="slide-title">Language Dominance</h2>
+                        <div class="languages-battle-grid">
+                            <div class="lang-pillar pillar-a glass-card">
+                                <h3>Contender A Core</h3>
+                                <div id="duelLangListA" class="lang-battle-list"></div>
+                            </div>
+                            <div class="vs-sphere">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="lang-pillar pillar-b glass-card">
+                                <h3>Contender B Core</h3>
+                                <div id="duelLangListB" class="lang-battle-list"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- DUEL SLIDE 4: VERDICT -->
                 <div class="slide-item" data-slide="3">
-                    <span class="slide-badge">Resolution</span>
-                    <h2 class="slide-title">System Resolution</h2>
-                    <div class="verdict-container">
-                        <div class="verdict-box glass-card">
-                            <div class="winner-crown"><i class="fas fa-trophy"></i></div>
-                            <h2 class="winner-announcement" id="duelWinnerTitle">Contender A wins</h2>
-                            <p class="verdict-desc" id="duelWinnerDesc">Declaring orbital dominance over the local developer universe.</p>
-                        </div>
-                        
-                        <div class="export-actions" style="margin-top: 2rem;">
-                            <button class="btn-glow-pulse" id="btnShareDuel">
-                                <i class="fab fa-linkedin"></i> SHARE DUEL ON LINKEDIN
-                            </button>
-                            <button class="btn-secondary" id="btnRestartDuel">
-                                <i class="fas fa-undo"></i> TEST ANOTHER
-                            </button>
+                    <div class="slide-center">
+                        <span class="slide-badge">Resolution</span>
+                        <h2 class="slide-title">System Resolution</h2>
+                        <div class="verdict-container">
+                            <div class="verdict-box glass-card">
+                                <div class="winner-crown"><i class="fas fa-trophy"></i></div>
+                                <h2 class="winner-announcement" id="duelWinnerTitle">Contender A wins</h2>
+                                <p class="verdict-desc" id="duelWinnerDesc">Declaring orbital dominance over the local developer universe.</p>
+                            </div>
+                            
+                            <div class="export-actions" style="margin-top: 2rem;">
+                                <button class="btn-glow-pulse" id="btnShareDuel">
+                                    <i class="fab fa-linkedin"></i> SHARE DUEL ON LINKEDIN
+                                </button>
+                                <button class="btn-secondary" id="btnRestartDuel">
+                                    <i class="fas fa-undo"></i> TEST ANOTHER
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
