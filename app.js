@@ -621,6 +621,32 @@ document.addEventListener('DOMContentLoaded', () => {
         avatarImg.src = devData.avatar;
     }
 
+    // Toast Notification System
+    function showToast(title, message, iconClass = 'fa-info-circle') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
+            <div class="toast-content">
+                <h4>${title}</h4>
+                <p>${message}</p>
+            </div>
+        `;
+        container.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => toast.classList.add('show'), 50);
+
+        // Animate out and remove after 6 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, 6000);
+    }
+
     // Share on LinkedIn button
     btnShareLinkedIn.addEventListener('click', () => {
         const name = devData.name;
@@ -651,56 +677,44 @@ Project developed by @Rahul Agarwal #GitPulse #GitHub #OpenSource #CreativeCodin
 
         generateStatsCard((imageBlob) => {
             btnShareLinkedIn.disabled = false;
-            const file = new File([imageBlob], `${user}-gitpulse-report.png`, { type: 'image/png' });
             
-            // Check file sharing support in Web Share API (mobile apps)
-            const shareFileSupport = navigator.canShare && navigator.canShare({ files: [file] });
+            // 1. Copy custom post text to clipboard
+            copyTextToClipboard(shareText).then(() => {
+                btnShareLinkedIn.innerHTML = '<i class="fas fa-check"></i> COPIED & DOWNLOADED!';
+                btnShareLinkedIn.style.backgroundColor = '#10b981';
+                btnShareLinkedIn.style.color = '#000';
 
-            if (navigator.share && shareFileSupport) {
-                // Mobile native share (auto-attaches image file + body copy)
-                navigator.share({
-                    title: 'GitPulse Constellation',
-                    text: shareText,
-                    files: [file]
-                }).then(() => {
+                // 2. Trigger direct PNG file download (works on mobile/desktop)
+                const url = URL.createObjectURL(imageBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `gitpulse-${user}-report.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // 3. Show our custom premium toast instruction
+                showToast(
+                    'Report Compiled!',
+                    '✓ Image saved to downloads.<br>✓ Post text copied to clipboard.<br><br>Opening LinkedIn... Paste and attach your downloaded image to share!',
+                    'fa-circle-check'
+                );
+
+                setTimeout(() => {
                     btnShareLinkedIn.innerHTML = originalHTML;
-                    console.log('Shared file constellation successfully');
-                }).catch(err => {
-                    btnShareLinkedIn.innerHTML = originalHTML;
-                    console.error('Web share canceled:', err);
-                });
-            } else {
-                // Desktop/Laptop fallback: auto-download PNG card + copy text + redirect
-                copyTextToClipboard(shareText).then(() => {
-                    btnShareLinkedIn.innerHTML = '<i class="fas fa-check"></i> REPORT COPIED & DOWNLOADED!';
-                    btnShareLinkedIn.style.backgroundColor = '#10b981';
-                    btnShareLinkedIn.style.color = '#000';
+                    btnShareLinkedIn.style.backgroundColor = '';
+                    btnShareLinkedIn.style.color = '';
 
-                    // Trigger direct file download
-                    const url = URL.createObjectURL(imageBlob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `gitpulse-${user}-report.png`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-
-                    setTimeout(() => {
-                        btnShareLinkedIn.innerHTML = originalHTML;
-                        btnShareLinkedIn.style.backgroundColor = '';
-                        btnShareLinkedIn.style.color = '';
-
-                        // Open LinkedIn Share dialog
-                        const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
-                        window.open(shareUrl, '_blank');
-                    }, 2000);
-                }).catch(err => {
-                    btnShareLinkedIn.innerHTML = originalHTML;
-                    console.error('Copy/download failed:', err);
-                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`, '_blank');
-                });
-            }
+                    // 4. Open LinkedIn Share dialog
+                    const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
+                    window.open(shareUrl, '_blank');
+                }, 2200);
+            }).catch(err => {
+                btnShareLinkedIn.innerHTML = originalHTML;
+                console.error('Copy/download failed:', err);
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`, '_blank');
+            });
         });
     });
 });
