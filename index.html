@@ -107,6 +107,8 @@
 
                 <div class="featured-banner">
                     Created by <a href="https://github.com/rahulagarwal18" target="_blank" class="author-link">Rahul Agarwal</a>
+                    &nbsp;&nbsp;•&nbsp;&nbsp;
+                    <a href="https://github.com/rahulagarwal18/gitpulse" target="_blank" class="author-link"><i class="fab fa-github"></i> Welcoming Contributions</a>
                 </div>
             </div>
         </main>
@@ -269,6 +271,9 @@
                                 <button class="btn-glow-pulse" id="btnShareLinkedIn">
                                     <i class="fab fa-linkedin"></i> SHARE ON LINKEDIN
                                 </button>
+                                <button class="btn-secondary" id="btnGetBadge" type="button">
+                                    <i class="fas fa-certificate"></i> GET README BADGE
+                                </button>
                                 <button class="btn-secondary" id="btnRestart">
                                     <i class="fas fa-undo"></i> TEST ANOTHER
                                 </button>
@@ -395,6 +400,9 @@
                                 <button class="btn-glow-pulse" id="btnShareDuel">
                                     <i class="fab fa-linkedin"></i> SHARE DUEL ON LINKEDIN
                                 </button>
+                                <button class="btn-secondary" id="btnGetDuelBadge" type="button">
+                                    <i class="fas fa-certificate"></i> GET README BADGE
+                                </button>
                                 <button class="btn-secondary" id="btnRestartDuel">
                                     <i class="fas fa-undo"></i> TEST ANOTHER
                                 </button>
@@ -406,6 +414,28 @@
             </div>
         </div>
         </section>
+    </div>
+
+    <!-- README Badge Modal -->
+    <div id="badgeModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card glass-card">
+            <button class="btn-close" id="closeBadgeModal" type="button"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-certificate text-accent"></i> GitHub README Badge</h2>
+            <p class="card-desc">Showcase your coding rank on your GitHub Profile README. Copy the markdown below and paste it in your profile file:</p>
+            
+            <div class="badge-preview-container">
+                <span class="preview-label">PREVIEW:</span>
+                <div id="badgePreview"></div>
+            </div>
+
+            <div class="code-copy-box" style="margin-bottom: 1.5rem;">
+                <code id="badgeMarkdownText"></code>
+            </div>
+            
+            <button id="copyBadgeMarkdownBtn" class="btn-glow-pulse w-full" type="button">
+                <span>COPY MARKDOWN</span>
+            </button>
+        </div>
     </div>
 
     <!-- Toast Alert Container -->

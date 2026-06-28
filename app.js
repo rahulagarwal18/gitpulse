@@ -1014,4 +1014,95 @@ Project developed by @Rahul Agarwal #GitPulse #GitHub #CodeBattle #TechCommunity
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`, '_blank');
         });
     });
+
+    // === GITHUB README BADGE MODAL SYSTEM ===
+    const badgeModal = document.getElementById('badgeModal');
+    const closeBadgeModal = document.getElementById('closeBadgeModal');
+    const btnGetBadge = document.getElementById('btnGetBadge');
+    const btnGetDuelBadge = document.getElementById('btnGetDuelBadge');
+    const badgePreview = document.getElementById('badgePreview');
+    const badgeMarkdownText = document.getElementById('badgeMarkdownText');
+    const copyBadgeMarkdownBtn = document.getElementById('copyBadgeMarkdownBtn');
+    
+    let generatedMarkdown = '';
+
+    function openBadgeModalWindow(type) {
+        if (!devData) return;
+        
+        let label = '';
+        let message = '';
+        let color = '00ffff'; // cyan
+        
+        if (type === 'single') {
+            const rank = devData.assessment?.rank || 'A';
+            label = 'GitPulse';
+            message = `${rank} Rank`;
+            if (rank === 'S' || rank === 'S+') color = 'd946ef'; // pink
+            else if (rank === 'A' || rank === 'A+') color = '00ffff'; // cyan
+            else if (rank === 'B' || rank === 'B+') color = '3b82f6'; // blue
+            else color = 'a1a1aa'; // grey
+        } else {
+            label = 'GitPulse';
+            message = 'Duel Victor';
+            color = 'ff3b30'; // red
+        }
+
+        const badgeUrl = `https://img.shields.io/badge/${encodeURIComponent(label)}-${encodeURIComponent(message)}-${color}?style=for-the-badge&logo=github`;
+        generatedMarkdown = `[![GitPulse Badge](${badgeUrl})](https://rahulagarwal.tech/gitpulse)`;
+        
+        // Populate modal contents
+        badgePreview.innerHTML = `<img src="${badgeUrl}" alt="GitPulse Badge Preview">`;
+        badgeMarkdownText.innerText = generatedMarkdown;
+        
+        // Show modal
+        badgeModal.style.display = 'flex';
+    }
+
+    if (btnGetBadge) {
+        btnGetBadge.addEventListener('click', () => openBadgeModalWindow('single'));
+    }
+    if (btnGetDuelBadge) {
+        btnGetDuelBadge.addEventListener('click', () => openBadgeModalWindow('duel'));
+    }
+
+    if (closeBadgeModal) {
+        closeBadgeModal.addEventListener('click', () => {
+            badgeModal.style.display = 'none';
+        });
+    }
+
+    // Close when clicking outside of modal card
+    window.addEventListener('click', (e) => {
+        if (e.target === badgeModal) {
+            badgeModal.style.display = 'none';
+        }
+    });
+
+    if (copyBadgeMarkdownBtn) {
+        copyBadgeMarkdownBtn.addEventListener('click', () => {
+            if (!generatedMarkdown) return;
+            copyTextToClipboard(generatedMarkdown).then(() => {
+                const originalHTML = copyBadgeMarkdownBtn.innerHTML;
+                copyBadgeMarkdownBtn.innerHTML = '<span><i class="fas fa-check"></i> COPIED!</span>';
+                copyBadgeMarkdownBtn.style.backgroundColor = '#10b981';
+                copyBadgeMarkdownBtn.style.color = '#000';
+                
+                showToast(
+                    'Badge Copied!',
+                    '✓ Markdown badge copied to clipboard.<br>Paste it into your GitHub Profile README.md file!',
+                    'fa-certificate'
+                );
+
+                setTimeout(() => {
+                    copyBadgeMarkdownBtn.innerHTML = originalHTML;
+                    copyBadgeMarkdownBtn.style.backgroundColor = '';
+                    copyBadgeMarkdownBtn.style.color = '';
+                    badgeModal.style.display = 'none';
+                }, 1800);
+            }).catch(err => {
+                console.error(err);
+                alert('Failed to copy to clipboard.');
+            });
+        });
+    }
 });

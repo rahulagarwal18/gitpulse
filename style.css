@@ -1736,3 +1736,66 @@ header {
     }
 }
 
+/* MODAL OVERLAY AND CARD SYSTEM */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(20px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.modal-card {
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+    padding: 3rem;
+    border-radius: 24px;
+    text-align: center;
+    animation: modal-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.badge-preview-container {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.preview-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+}
+
+#badgePreview {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    width: 100%;
+}
+
+#badgePreview img {
+    max-width: 100%;
+    height: auto;
+}
+
+@keyframes modal-slide-in {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
