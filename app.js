@@ -493,6 +493,134 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Dynamic Stats Card Canvas Generator (Draws report visual client-side)
+    function generateStatsCard(callback) {
+        const cardCanvas = document.createElement('canvas');
+        cardCanvas.width = 800;
+        cardCanvas.height = 500;
+        const ctx = cardCanvas.getContext('2d');
+
+        // 1. Draw Space Gradient Background
+        const grad = ctx.createRadialGradient(400, 250, 50, 400, 250, 500);
+        grad.addColorStop(0, '#0d1527');
+        grad.addColorStop(1, '#050508');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 800, 500);
+
+        // 2. Draw glowing cyber border
+        const borderGrad = ctx.createLinearGradient(0, 0, 800, 500);
+        borderGrad.addColorStop(0, '#3b82f6');
+        borderGrad.addColorStop(0.5, '#00ffff');
+        borderGrad.addColorStop(1, '#8b5cf6');
+        ctx.strokeStyle = borderGrad;
+        ctx.lineWidth = 8;
+        ctx.strokeRect(4, 4, 792, 492);
+
+        // 3. Draw Brand Header
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 24px Outfit, sans-serif';
+        ctx.fillText('GIT.PULSE', 40, 55);
+
+        // 4. Draw Rank Circle (Left side)
+        const rankColor = devData.assessment.rank === 'S' ? '#8b5cf6' : (devData.assessment.rank.startsWith('A') ? '#00ffff' : '#3b82f6');
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = rankColor;
+        ctx.fillStyle = '#050508';
+        ctx.strokeStyle = rankColor;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(220, 250, 90, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0; // Reset shadow glow
+
+        // Draw Rank character
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 68px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(devData.assessment.rank, 220, 235);
+        
+        ctx.fillStyle = rankColor;
+        ctx.font = '700 12px monospace';
+        ctx.fillText('PULSE RANK', 220, 295);
+
+        // 5. Draw Developer Details (Right side)
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        
+        // Name
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 36px Outfit, sans-serif';
+        ctx.fillText(devData.name, 400, 160);
+
+        // Username
+        ctx.fillStyle = '#00ffff';
+        ctx.font = '500 18px monospace';
+        ctx.fillText('@' + devData.username, 400, 195);
+
+        // Title
+        ctx.fillStyle = '#8b5cf6';
+        ctx.font = '700 20px Outfit, sans-serif';
+        ctx.fillText(devData.assessment.title, 400, 240);
+
+        // Metrics Labels
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = '500 14px monospace';
+        ctx.fillText('REPOSITORIES:', 400, 295);
+        ctx.fillText('TOTAL STARS:', 400, 335);
+        ctx.fillText('CORE LANGUAGE:', 400, 375);
+
+        // Metrics Values
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 16px Outfit, sans-serif';
+        ctx.fillText(devData.reposCount.toString(), 570, 295);
+        ctx.fillText(devData.starsCount.toString(), 570, 335);
+        ctx.fillText(devData.languages[0]?.name || 'Code', 570, 375);
+
+        // Site watermark
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.font = '500 12px monospace';
+        ctx.fillText('SCAN YOUR PROFILE AT: rahulagarwal.tech/gitpulse', 400, 440);
+
+        // 6. Draw circular Avatar image (with CORS anonymous loading support)
+        const avatarImg = new Image();
+        avatarImg.crossOrigin = 'anonymous';
+        avatarImg.onload = function() {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(710, 80, 40, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(avatarImg, 670, 40, 80, 80);
+            ctx.restore();
+
+            // Border ring
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(710, 80, 41, 0, Math.PI * 2);
+            ctx.stroke();
+
+            cardCanvas.toBlob(blob => { callback(blob); }, 'image/png');
+        };
+        avatarImg.onerror = function() {
+            // CORS/offline fallback: Draw glowing initials circle
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath();
+            ctx.arc(710, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 24px Outfit, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(devData.name.charAt(0).toUpperCase(), 710, 80);
+
+            cardCanvas.toBlob(blob => { callback(blob); }, 'image/png');
+        };
+        avatarImg.src = devData.avatar;
+    }
+
     // Share on LinkedIn button
     btnShareLinkedIn.addEventListener('click', () => {
         const name = devData.name;
@@ -517,40 +645,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Project developed by @Rahul Agarwal #GitPulse #GitHub #OpenSource #CreativeCoding`;
 
-        // Check if Native Web Share API is available (usually mobile)
-        if (navigator.share) {
-            navigator.share({
-                title: 'GitPulse Constellation',
-                text: shareText,
-                url: 'https://rahulagarwal.tech/gitpulse'
-            }).then(() => {
-                console.log('Shared successfully');
-            }).catch(err => {
-                console.error('Web share canceled or failed:', err);
-            });
-        } else {
-            // Copy custom post text to clipboard with fallback (Desktop)
-            copyTextToClipboard(shareText).then(() => {
-                const originalHTML = btnShareLinkedIn.innerHTML;
-                btnShareLinkedIn.innerHTML = '<i class="fas fa-check"></i> COPIED POST TEXT!';
-                btnShareLinkedIn.style.backgroundColor = '#10b981'; // Green feedback
-                btnShareLinkedIn.style.color = '#000';
-                
-                setTimeout(() => {
+        const originalHTML = btnShareLinkedIn.innerHTML;
+        btnShareLinkedIn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GENERATING REPORT...';
+        btnShareLinkedIn.disabled = true;
+
+        generateStatsCard((imageBlob) => {
+            btnShareLinkedIn.disabled = false;
+            const file = new File([imageBlob], `${user}-gitpulse-report.png`, { type: 'image/png' });
+            
+            // Check file sharing support in Web Share API (mobile apps)
+            const shareFileSupport = navigator.canShare && navigator.canShare({ files: [file] });
+
+            if (navigator.share && shareFileSupport) {
+                // Mobile native share (auto-attaches image file + body copy)
+                navigator.share({
+                    title: 'GitPulse Constellation',
+                    text: shareText,
+                    files: [file]
+                }).then(() => {
                     btnShareLinkedIn.innerHTML = originalHTML;
-                    btnShareLinkedIn.style.backgroundColor = ''; // Reset
-                    btnShareLinkedIn.style.color = '';
-                    
-                    // Open LinkedIn share dialog with our URL (which will load the OG banner/card preview)
-                    const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
-                    window.open(shareUrl, '_blank');
-                }, 1200);
-            }).catch(err => {
-                console.error('Clipboard copy failed:', err);
-                // Fallback: direct redirect
-                const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
-                window.open(shareUrl, '_blank');
-            });
-        }
+                    console.log('Shared file constellation successfully');
+                }).catch(err => {
+                    btnShareLinkedIn.innerHTML = originalHTML;
+                    console.error('Web share canceled:', err);
+                });
+            } else {
+                // Desktop/Laptop fallback: auto-download PNG card + copy text + redirect
+                copyTextToClipboard(shareText).then(() => {
+                    btnShareLinkedIn.innerHTML = '<i class="fas fa-check"></i> REPORT COPIED & DOWNLOADED!';
+                    btnShareLinkedIn.style.backgroundColor = '#10b981';
+                    btnShareLinkedIn.style.color = '#000';
+
+                    // Trigger direct file download
+                    const url = URL.createObjectURL(imageBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `gitpulse-${user}-report.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    setTimeout(() => {
+                        btnShareLinkedIn.innerHTML = originalHTML;
+                        btnShareLinkedIn.style.backgroundColor = '';
+                        btnShareLinkedIn.style.color = '';
+
+                        // Open LinkedIn Share dialog
+                        const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`;
+                        window.open(shareUrl, '_blank');
+                    }, 2000);
+                }).catch(err => {
+                    btnShareLinkedIn.innerHTML = originalHTML;
+                    console.error('Copy/download failed:', err);
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://rahulagarwal.tech/gitpulse')}`, '_blank');
+                });
+            }
+        });
     });
 });
